@@ -3,6 +3,7 @@ package com.github.amidupeuple.PhotoGallery;
 import android.net.Uri;
 import android.util.Log;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,8 +39,9 @@ public class FlickrFetchr {
     }
 
     byte[] getUrlBytes(String urlSpec) throws IOException{
-        URL url = new URL(urlSpec);
-        Log.i(TAG, ">" + urlSpec + "<");
+
+        URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=80a3bea9533a4b531138465d3014a9c4&extras=url_s");
+
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
 
