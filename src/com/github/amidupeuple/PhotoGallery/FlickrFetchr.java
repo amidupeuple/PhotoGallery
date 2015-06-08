@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class FlickrFetchr {
     private static final String TAG = "FlickrFetchr";
 
-    private static final String ENDPOINT = "http://api.flickr.com/services/rest/";
+    private static final String ENDPOINT = "https://api.flickr.com/services/rest/";
     private static final String API_KEY = "80a3bea9533a4b531138465d3014a9c4";
     private static final String METHOD_GET_RECENT = "flickr.photos.getRecent";
     private static final String PARAM_EXTRAS = "extras";
@@ -49,6 +49,7 @@ public class FlickrFetchr {
     }
 
     public ArrayList<GalleryItem> fetchItems(int pageNumb) {
+        Log.d(TAG, "+ enter in fetchItems()");
         ArrayList<GalleryItem> items = new ArrayList<GalleryItem>();
 
         try {
@@ -72,12 +73,13 @@ public class FlickrFetchr {
             Log.e(TAG, "Failed to parse items", xppe );
         }
 
+        Log.d(TAG, "- exit from fetchItems()");
         return items;
     }
 
     byte[] getUrlBytes(String urlSpec) throws IOException{
 
-        URL url = new URL("https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=80a3bea9533a4b531138465d3014a9c4&extras=url_s");
+        URL url = new URL(urlSpec);
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
