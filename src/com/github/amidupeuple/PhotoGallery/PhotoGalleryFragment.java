@@ -14,12 +14,14 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by dpivovar on 28.11.2014.
  */
 public class PhotoGalleryFragment extends Fragment {
     private static final String TAG = "PhotoGalleryFragment";
+    private static final int PRELOADING_SHIFT = 10;
 
     GridView mGridView;
     ArrayList<GalleryItem> mItems = new ArrayList<GalleryItem>(0);
@@ -113,8 +115,9 @@ public class PhotoGalleryFragment extends Fragment {
             imageView.setImageResource(R.drawable.icon);
 
             GalleryItem item = getItem(position);
-
-            mThumbnailThread.queueThumbnail(imageView, item.getmUrl());
+            List<GalleryItem> preloadItems =  mItems.subList(position > 9 ? position - PRELOADING_SHIFT : 0,
+                                                             (mItems.size() - position - 1) > PRELOADING_SHIFT ? position + PRELOADING_SHIFT : mItems.size() - 1);
+            mThumbnailThread.queueThumbnail(imageView, item.getmUrl(), preloadItems);
 
             return  convertView;
         }

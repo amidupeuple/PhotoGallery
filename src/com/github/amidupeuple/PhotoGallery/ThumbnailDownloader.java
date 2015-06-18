@@ -10,8 +10,10 @@ import android.util.Log;
 import android.util.LruCache;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,7 +39,7 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
         this.mListener = mListener;
     }
 
-    public void queueThumbnail(Token token, String url) {
+    public void queueThumbnail(Token token, String url, List<GalleryItem> preloadItems) {
         Log.i(TAG, "Got an URL: " + url);
         requestMap.put(token, url);
 
