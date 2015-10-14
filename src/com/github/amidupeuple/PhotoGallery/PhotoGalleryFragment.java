@@ -7,6 +7,9 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -25,14 +28,14 @@ public class PhotoGalleryFragment extends Fragment {
 
     GridView mGridView;
     ArrayList<GalleryItem> mItems = new ArrayList<GalleryItem>(0);
-    int pageNumb = 1;
     ThumbnailDownloader<ImageView> mThumbnailThread;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        new FetchItemTask().execute(pageNumb);
+        setHasOptionsMenu(true);
+        updateItems();
 
         mThumbnailThread = new ThumbnailDownloader<ImageView>(new Handler());
         mThumbnailThread.setListener(new ThumbnailDownloader.Listener<ImageView>() {
@@ -81,22 +84,47 @@ public class PhotoGalleryFragment extends Fragment {
         mThumbnailThread.clearQueue();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_photo_gallery, menu);
+    }
 
-    private class FetchItemTask extends AsyncTask<Integer, Void, ArrayList<GalleryItem>> {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_search:
+                getActivity().onSearchRequested();
+                return true;
+            case R.id.menu_item_clear:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void updateItems() {
+        new FetchItemTask().execute();
+    }
+
+
+
+
+    private class FetchItemTask extends AsyncTask<Void, Void, ArrayList<GalleryItem>> {
         @Override
-        protected ArrayList<GalleryItem> doInBackground(Integer... params) {
-            return new FlickrFetchr().fetchItems(params[0]);
+        protected ArrayList<GalleryItem> doInBackground(Void... params) {
+            String query = "android";
+            if (query != null) {
+                return new FlickrFetchr().search(query);
+            } else {
+                return new FlickrFetchr().fetchItems();
+            }
         }
 
         @Override
         protected void onPostExecute(ArrayList<GalleryItem> items) {
             mItems.addAll(items);
-            if (pageNumb == 1) {
-                setupAdapter();
-            } else {
-                ((ArrayAdapter) mGridView.getAdapter()).notifyDataSetChanged();
-            }
-
+            setupAdapter();
         }
     }
 

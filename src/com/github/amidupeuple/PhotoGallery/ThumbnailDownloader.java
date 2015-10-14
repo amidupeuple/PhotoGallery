@@ -22,7 +22,7 @@ import java.util.Map;
 public class ThumbnailDownloader<Token> extends HandlerThread {
     private static final String TAG = "ThumbnailDownloader";
     private static final int MESSAGE_DOWNLOAD = 0;
-    private LruCache<String, Bitmap> imagesCache = new LruCache<String, Bitmap>(20);
+    private LruCache<String, Bitmap> imagesCache = new LruCache<String, Bitmap>(50);
 
     Handler mHandler;
     Map<Token, String> requestMap = Collections.synchronizedMap(new HashMap<Token, String>());
